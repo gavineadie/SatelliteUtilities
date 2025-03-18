@@ -1,4 +1,5 @@
 # SatelliteUtilities
+## Beware: under construction .. API will change)
 
 ### SatelliteKit
 
@@ -12,7 +13,7 @@ a standard form read from a file or network source.  That provides the satellite
 of the seven classical orbital elements, plus additional data need to cope with perturbations to 
 that classical orbit caused by atmospheric drag.  In `SatelliteKit` these elements are:
 
-```
+```swift
     public let t₀: Double                   // the t=0 epoch time
     public let e₀: Double                   // Eccentricity
     public let i₀: Double                   // Inclination (radians).
@@ -30,13 +31,13 @@ ___
 
 The data for `Elements` is often obtained from the [Celestrak](celestrak.com), a source of such data,
 now a website, that had been in operation for forty years.  That data is available for various groups
-of satellites in various formats .. `SatelliteUtilities` provides ways to access that information and
+of satellites in various formats. `SatelliteUtilities` provides ways to access that information and
 make it available for in `SatelliteKit`.  
 
 #### ElementsGroup
 
 For example:
-```
+```swift
     var elementsGroup = ElementsGroup()
     await elementsGroup.downloadTLEs(
         from: "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle", 
@@ -52,7 +53,7 @@ A `TLE` (two line element) file from the Celestrak group called "visual" contain
 * extracts the `Elements` for the International Space Station (Norad ID: 25544)
 * prints a summary of the ISS `Elements`
 A `Satellite` can be constructed from the `Elements`
-```
+```swift
    let issSatellite = Satellite(issElements)
 ```
 and propagated with `SatelliteKit` functions.
@@ -60,15 +61,18 @@ and propagated with `SatelliteKit` functions.
 #### ElementsGroup
 
 Well behaved applications will not want to reach out to Celestrak every time satellite information
-is needed.  First, the data is refreshed only a few times a day so it's very unlikely to change over 
+is needed.  First, the Celestrak data is refreshed only a few times a day so it's very unlikely to change over 
 minutes or even a few hours and, secondly, Celestrak is a widely used resource and it's only polite
 to not hit it more than necessary.
 
 To this end, `SatelliteUtilities` provides a way to keep a local store of download files.
-```
-    let store = ElementsStore()                         // create empty Store
+```swift
+    let store = ElementsStore()                         
     store.insertElements(groupKey: "visual-tles-net",
-                         cacheText: tleTestText)        // insert one file
+                         cacheText: tleTestText)        
 
-    _ = store.extractElements(groupKey: "testKey2")     // extract file
+    let elements = store.extractElements(groupKey: "visual-tles-net")     
 ```
+* creates an `ElementsStore` 
+* call the `insertElements` function to write `Elements` into the store
+* and reads them back.

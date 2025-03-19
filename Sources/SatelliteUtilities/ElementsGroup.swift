@@ -6,9 +6,8 @@
 import Foundation
 import SatelliteKit
 
-enum APIError: Error {
-    case invalidUrl
-    case invalidData
+enum ElementsGroupError: Error {
+    case tleProcessingFailed
 }
 
 /// An `ElementsGroup` is a structure of a processed `Elements` collection.  Each Satellite is
@@ -35,22 +34,21 @@ enum APIError: Error {
 /// ```
 public struct ElementsGroup: Codable {
 
-    var named: String
-    var dated: Date = Date.distantPast
-    public var table = [UInt : Elements]()
-    
+    let named: String
+    let dated: Date
+    public let table: [UInt : Elements]
+
     /// Creates an empty `ElementsGroup` named: "----" and dated: .distantPast
     public init() {
         self.named = "----"
         self.dated = Date.distantPast
+        self.table = [UInt : Elements]()
     }
-    
-    /// Creates an `ElementsGroup` containing Satellites extracted from an array of `Elements`,
-    /// named: "ELEMENTS" and dated: .now
+
+    /// Creates an `ElementsGroup` containing Satellites extracted from an array of `Elements`.
     /// - Parameter elementsArray: an array of `Elements`
     public init(_ elementsArray: [Elements]) {
-        self.init()
-        self.named = "ELEMENTS"
+        self.named = "none"
         if #available(macOS 12, *, iOS 15, *) {
             self.dated = Date.now
         } else {
@@ -58,7 +56,7 @@ public struct ElementsGroup: Codable {
         }
         self.table = Dictionary(uniqueKeysWithValues: elementsArray.map{ (UInt($0.noradIndex), $0) })
     }
-    
+
     /// Creates a named `ElementsGroup` containing Satellites extracted from an array of `Elements`,
     /// named and dated explicitly
     /// - Parameters:
@@ -68,21 +66,34 @@ public struct ElementsGroup: Codable {
     public init(_ elementsArray: [Elements],
                 named: String,
                 dated: Date = .distantPast) {
-        self.init(elementsArray)
-        self.named = named
+        self.named = named.lowercased()
         self.dated = dated
+        self.table = Dictionary(uniqueKeysWithValues: elementsArray.map { (UInt($0.noradIndex), $0) })
     }
 
     /// Creates an `ElementsGroup` containing Satellites extracted from a TLE `String`
     /// - Parameter tlesText: a `String` containing TLEs
     public init(_ tlesText: String) throws {
-        self.init(try preProcessTLEs(tlesText).map { try Elements($0.0, $0.1, $0.2) })
+        do {
+            self.init(try preProcessTLEs(tlesText).map { try Elements($0.0, $0.1, $0.2) })
+        } catch {
+            throw ElementsGroupError.tleProcessingFailed
+        }
     }
     
-}
+    /// Creates an `ElementsGroup` containing Satellites extracted from a JSON `String`
+    /// - Parameter elementsJSON: a `String` containing JSON elements
+    public init(json elementsJSON: String) {
+        self.init(jsonToElementArray(jsonText: elementsJSON))
 
-public extension ElementsGroup {
-    
+        func jsonToElementArray(jsonText: String) -> [Elements] {
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .formatted(DateFormatter.iso8601Micros)
+
+            return try! decoder.decode([Elements].self, from: jsonText.data(using: .utf8)!)
+        }
+    }
+
     /// obtains one satellite's `Elements` from the `ElementsGroup`
     /// - Parameter norad: the object's NORAD ID
     /// - Returns: the satellite `Elements`

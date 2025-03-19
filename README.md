@@ -38,8 +38,7 @@ make it available for in `SatelliteKit`.
 
 For example:
 ```swift
-    var elementsGroup = ElementsGroup()
-    await elementsGroup.downloadTLEs(
+    let elementsGroup = await elementsGroup.downloadTLEs(
         from: "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle", 
         for: "visual-tles-celestrak")
     guard let issElements = elementsGroup.norad(25544)
@@ -68,10 +67,10 @@ to not hit it more than necessary.
 To this end, `SatelliteUtilities` provides a way to keep a local store of download files.
 ```swift
     let store = ElementsStore()                         
-    store.insertElements(groupKey: "visual-tles-net",
-                         cacheText: tleTestText)        
+    store.insertElements(elementsGroup,
+                         named: "visual-tles-net")        
 
-    let elements = store.extractElements(groupKey: "visual-tles-net")     
+    let elements = store.extractElements(named: "visual-tles-net")     
 ```
 * creates an `ElementsStore` 
 * call the `insertElements` function to write `Elements` into the store

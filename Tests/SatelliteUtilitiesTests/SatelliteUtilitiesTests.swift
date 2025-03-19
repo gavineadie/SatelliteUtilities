@@ -18,31 +18,27 @@ import SatelliteKit
         print(group.prettyPrint())
 
 
-        await group.downloadJSON(
+        let jsnGroup = await downloadJSON(
             "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=json",
             named: "brightest.jsn")
-        print(group.prettyPrint())
+        print(jsnGroup!.prettyPrint())
 
-        await group.downloadXMLs(
+        let xmlGroup = await downloadXMLs(
             "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=xml",
             named: "brightest.xml")
-        print(group.prettyPrint())
+        print(xmlGroup!.prettyPrint())
 
-        await group.downloadTLEs(
+        let tleGroup = await downloadTLEs(
             "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle",
             named: "brightest.tle")
-        print(group.prettyPrint())
+        print(tleGroup!.prettyPrint())
 
-        await group.downloadCSVs(
+        let csvGroup = await downloadCSVs(
             "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=csv",
             named: "brightest.csv")
-        print(group.prettyPrint())
+        print(csvGroup!.prettyPrint())
 
-        let celestrackGroup = try! await fetchFromCelestak()
-
-        print(celestrackGroup.prettyPrint())
-
-        print(celestrackGroup.norad(25544)!.debugDescription())
+        print(csvGroup!.norad(25544)!.debugDescription())
 
     }
 }
@@ -69,25 +65,43 @@ import SatelliteKit
         var group = ElementsGroup()
         let store = ElementsStore(storeName: "com.ramsaycons.SatelliteUtilities.test")
 
-        store.insertElements(groupName: "ZERO", groupJSON: ElementsGroup()) // [Elements(line0, line1, line2)])
+        store.insertElements(ElementsGroup(), named: "ZERO")
         print(store.prettyPrint())
 
-        store.insertElements(groupName: "more", groupJSON: ElementsGroup([try Elements(line0, line1, line2)]))
+        store.insertElements(ElementsGroup([try Elements(line0, line1, line2)]), named: "more")
         print(store.prettyPrint())
 
-        await group.downloadJSON(
+        group = await downloadJSON(
             "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=json",
             named: "brightest.jsn",
-            store: store)
+            store: store)!
 
-        group = store.extractElements(groupName: "more")
-        print(group.prettyPrint())
+        group = await downloadXMLs(
+            "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=xml",
+            named: "brightest.xml",
+            store: store)!
+
+        group = await downloadTLEs(
+            "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=tle",
+            named: "brightest.tle",
+            store: store)!
+
+        group = await downloadCSVs(
+            "https://celestrak.org/NORAD/elements/gp.php?GROUP=visual&FORMAT=csv",
+            named: "brightest.csv",
+            store: store)!
+
+        guard let group1 = store.extractElements(named: "more") else { #expect(Bool(false)); return }
+        print(group1.prettyPrint())
 
         print(store.prettyPrint())
 
         store.deleteElements(groupName: "test")
+        #expect(store.extractElements(named: "test") == nil)
 
         print(store.prettyPrint())
+
+//        store.deleteAllElements()
 
     }
 }

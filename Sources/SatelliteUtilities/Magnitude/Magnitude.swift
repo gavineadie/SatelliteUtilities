@@ -41,11 +41,11 @@ public struct Magnitude {
         let distanceKm = observerToSatellite.magnitude()
         
         let phaseCorrection = (1 + cos(phaseAngleRadians)) / 2
-        let satelliteInfo = SatelltesInfos(rawValue: "\(satellite.noradIdent)")
+        let satelliteInfo = SatellitesInfos(rawValue: "\(satellite.noradIdent)")
         guard let intrinsicMag = satelliteInfo?.intrinsicMag else {
-            throw Errors.intrinsigMagnitudeNotFound
+            throw Errors.intrinsicMagnitudeNotFound
         }
-        print("instrin is \(intrinsicMag)")
+        print("intrinsic mag is \(intrinsicMag)")
         print("distance km is \(distanceKm)")
         let finalMagnitude = intrinsicMag + 5 * log10(distanceKm / 1000.0) - 2.5 * log10(phaseCorrection)
         
@@ -84,9 +84,9 @@ public struct Magnitude {
             let distanceKm = observerToSatellite.magnitude()
             
             let phaseCorrection = (1 + cos(phaseAngleRadians)) / 2
-            let satelliteInfo = SatelltesInfos(rawValue: "\(satellite.noradIdent)")
+            let satelliteInfo = SatellitesInfos(rawValue: "\(satellite.noradIdent)")
             guard let intrinsicMag = satelliteInfo?.intrinsicMag else {
-                throw Errors.intrinsigMagnitudeNotFound
+                throw Errors.intrinsicMagnitudeNotFound
             }
             let finalMagnitude = intrinsicMag + 5 * log10(distanceKm / 1000.0) - 2.5 * log10(phaseCorrection)
             
@@ -116,7 +116,7 @@ public struct Magnitude {
         let sunToSatellite = satellitePosition - sunPosition
         let phaseAngleRadians = separation(observerToSatellite, sunToSatellite) * deg2rad
         
-        let satelliteInfo = SatelltesInfos(rawValue: "\(satellite.noradIdent)")
+        let satelliteInfo = SatellitesInfos(rawValue: "\(satellite.noradIdent)")
         guard let area = satelliteInfo?.area,
               let albedo = satelliteInfo?.albedo else {
             throw Errors.areaAndAlbedoNotFound

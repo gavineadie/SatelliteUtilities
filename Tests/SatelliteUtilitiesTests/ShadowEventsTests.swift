@@ -7,7 +7,6 @@
 import Foundation
 import SatelliteKit
 import Testing
-import Foundation
 
 @testable import SatelliteUtilities
 
@@ -46,7 +45,8 @@ struct Test {
         
         print("shadow time is \(shadowTime)", terminator: "\n")
         
-        #expect(shadowTime.entry ?? .now >= expectedMin && shadowTime.exit ?? .now <= expectedMax)
+        #expect(shadowTime.entry ?? .now >= expectedMin &&
+                shadowTime.exit  ?? .now <= expectedMax)
 
     }
 

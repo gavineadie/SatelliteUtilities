@@ -10,16 +10,19 @@ enum ElementsGroupError: Error {
     case tleProcessingFailed
 }
 
-/// An `ElementsGroup` is a structure of a processed `Elements` collection.  Each Satellite is
-/// indexed by its numeric NORAD ID.  A `Date` property could be the age of the `ElementsGroup`.
+/// An `ElementsGroup` is a named and dated collection of processed satellite `Elements`.
+/// Each satellite's`Elements` in the `ElementsGroup` is indexed by its numeric NORAD ID.
+/// The `dated` property of the `ElementsGroup` could be when
+/// the `ElementsGroup` was created or, if downloaded, the age of the network resource.
 /// One ElementsGroup would typically be derived from reading multiple TLEs from one file.
 /// ```
 ///         +------------------------------------------------+
-///         |  named: "visual", etc ..                       |
+///         |  named: an arbitrary name ("visual", etc ..)   |
 ///         |  dated: an arbitrary date stamp                |
 ///         +-----------+------------------------------------+
 ///         |           | +--------------------------------+ |
-///         | 12345 --> | | commonName, noradIndex,        | |
+///         | 12345 --> | | the satellite's `Elements`     | |
+///         |           | | commonName, noradIndex,        | |
 ///         |           | | launchName, t₀, e₀, i₀, ω₀,    | |
 ///         |           | | Ω₀, M₀, n₀, a₀, ephemType,     | |
 ///         |           | | tleClass, tleNumber, revNumber | |
@@ -97,7 +100,7 @@ public struct ElementsGroup: Codable {
     /// obtains one satellite's `Elements` from the `ElementsGroup`
     /// - Parameter norad: the object's NORAD ID
     /// - Returns: the satellite `Elements`
-    func norad(_ norad: UInt) -> Elements? { table[norad] }
+    public func norad(_ norad: UInt) -> Elements? { table[norad] }
 
 }
 

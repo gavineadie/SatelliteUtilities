@@ -96,19 +96,19 @@ public struct ShadowEvents {
                     julianDate: julianDate
                 )
 
-            if isInShadow != previousShadowState {
-                if let refinedTime = try refineShadowEvent(
-                    satellite: satellite,
-                    around: currentTime.addingTimeInterval(TimeInterval(-coarseStep)),
-                    end: currentTime,
-                    observer: observer,
-                    step: fineStep,
-                    targetState: isInShadow
-                ) {
-                    events.append((refinedTime, isInShadow))
+                if isInShadow != previousShadowState {
+                    if let refinedTime = try refineShadowEvent(
+                        satellite: satellite,
+                        around: currentTime.addingTimeInterval(TimeInterval(-coarseStep)),
+                        end: currentTime,
+                        observer: observer,
+                        step: fineStep,
+                        targetState: isInShadow
+                    ) {
+                        events.append((refinedTime, isInShadow))
+                    }
                 }
-            }
-            previousShadowState = isInShadow
+                previousShadowState = isInShadow
             }
             currentTime = currentTime.addingTimeInterval(TimeInterval(coarseStep))
         }

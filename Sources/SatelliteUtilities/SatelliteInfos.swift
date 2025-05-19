@@ -11,7 +11,7 @@ import Foundation
 /// Intrinsic mag is used for the simplified version
 /// Area and Albedo are used for the precise version -- it can require some minor adjustments
 
-enum SatelltesInfos: String {
+enum SatellitesInfos: String {
     case iss = "25544"
     case hubble = "20580"
     case tiangong = "48274"

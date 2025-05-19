@@ -6,14 +6,14 @@
 import Foundation
 
 enum Errors: LocalizedError {
-    case intrinsigMagnitudeNotFound
+    case intrinsicMagnitudeNotFound
     case areaAndAlbedoNotFound
     case orbitPath
     
     var errorDescription: String? {
         switch self {
-        case .intrinsigMagnitudeNotFound:
-            return "No intrinsig magnitude found for your satellite"
+        case .intrinsicMagnitudeNotFound:
+            return "No intrinsic magnitude found for your satellite"
         case .areaAndAlbedoNotFound:
             return "No area and albedo found for your satellite"
         case .orbitPath:

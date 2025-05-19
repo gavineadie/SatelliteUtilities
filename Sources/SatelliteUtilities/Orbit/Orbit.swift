@@ -14,7 +14,7 @@ public struct Orbit {
   │ Return satellite's orbit path to use it on a map (like MapKit)                                   │
   │ Most of observable satellite are in low earth orbit, which means they complete an orbit in       │
   │ roughly 90 minutes. However, if we need to track satellites in higher orbits; especially         │
-  │ those that require the SDP4 model; it's also possible to extend the prediction duraction         │
+  │ those that require the SDP4 model; it's also possible to extend the prediction duration          │
   │ accordingly.                                                                                     │
   └──────────────────────────────────────────────────────────────────────────────────────────────────┘*/
     
